@@ -1,7 +1,8 @@
 import React from 'react';
 import s from '../Filter/Filter.module.css';
 
-function Filter({ onChange, value }) {
+function Filter(props) {
+  const { onChange, value } = props;
   return (
     <label className={s.label}>
       Find contacts by name
@@ -11,7 +12,6 @@ function Filter({ onChange, value }) {
         name="name"
         value={value}
         onChange={onChange}
-        autocomplete="off"
         pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
         title="Имя может состоять только из букв, апострофа, тире и пробелов. Например Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan и т. п."
         required
