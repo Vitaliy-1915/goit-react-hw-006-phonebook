@@ -23,8 +23,16 @@ function ContactsList(props) {
   );
 }
 
+const getVisibleContacts = (filter, items) => {
+  const normalizeContacts = filter.toLocaleLowerCase();
+
+  return items.filter(item =>
+    item.name.toLowerCase().includes(normalizeContacts),
+  );
+};
+
 const mapStateToProps = state => ({
-  contacts: state.contacts.items,
+  contacts: getVisibleContacts(state.contacts.filter, state.contacts.items),
 });
 
 const mapDispatchToProps = dipatch => ({
