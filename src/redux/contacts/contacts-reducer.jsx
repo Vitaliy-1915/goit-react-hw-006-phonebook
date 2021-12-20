@@ -3,13 +3,7 @@ import { createReducer } from '@reduxjs/toolkit';
 import * as actions from './contacts-actions';
 
 const items = createReducer([], {
-  [actions.addContact]: (state, action) =>
-    state.find(s =>
-      s.name.toLowerCase().includes(action.payload.name.toLowerCase()),
-    )
-      ? alert(`${action.payload.name.toLowerCase()} is already in contacts`) ??
-        state
-      : [...state, action.payload],
+  [actions.addContact]: (state, action) => [...state, action.payload],
   [actions.deleteContact]: (state, action) =>
     state.filter(contact => contact.id !== action.payload),
 });

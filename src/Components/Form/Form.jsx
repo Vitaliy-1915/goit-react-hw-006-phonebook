@@ -1,71 +1,85 @@
-import React, { Component } from 'react';
+import { useState } from 'react';
 import Button from '../Button/Button';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { addContact } from '../../redux/contacts/contacts-actions';
 import s from '../Form/Form.module.css';
 
-export class Form extends Component {
-  state = {
-    name: '',
-    number: '',
+function Form({ onSubmit }) {
+  const contacts = useSelector(state => state.contacts.items);
+  // console.log(contacts);
+  const [name, setName] = useState('');
+  const [number, setNumber] = useState('');
+
+  const handleChange = e => {
+    const { name, value } = e.currentTarget;
+
+    switch (name) {
+      case 'name':
+        setName(value);
+        break;
+
+      case 'number':
+        setNumber(value);
+        break;
+
+      default:
+        break;
+    }
   };
 
-  handleChange = e => {
-    // const { name, value } = e.currentTarget;
-    this.setState({
-      [e.currentTarget.name]: e.currentTarget.value,
-    });
+  const findContacts = contacts.find(cont =>
+    cont.name.toLowerCase().includes(name.toLowerCase()),
+  );
+
+  const handleSubmit = e => {
+    if (findContacts) {
+      alert(`${name} is already in contacts`);
+    } else {
+      e.preventDefault();
+
+      onSubmit({ name, number });
+
+      reset();
+    }
   };
 
-  handleSubmit = e => {
-    e.preventDefault();
-    // console.log(this.state);
-    this.props.onSubmit(this.state);
-
-    this.reset();
+  const reset = () => {
+    setName('');
+    setNumber('');
   };
 
-  reset = () => {
-    this.setState({
-      name: '',
-      number: '',
-    });
-  };
+  return (
+    <form className={s.form} onSubmit={handleSubmit}>
+      <label className={s.label}>
+        Name
+        <input
+          className={s.input}
+          type="text"
+          name="name"
+          onChange={handleChange}
+          value={name}
+          pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
+          title="Имя может состоять только из букв, апострофа, тире и пробелов. Например Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan и т. п."
+          required
+        />
+      </label>
 
-  render() {
-    return (
-      <form className={s.form} onSubmit={this.handleSubmit}>
-        <label className={s.label}>
-          Name
-          <input
-            className={s.input}
-            type="text"
-            name="name"
-            onChange={this.handleChange}
-            value={this.state.name}
-            pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-            title="Имя может состоять только из букв, апострофа, тире и пробелов. Например Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan и т. п."
-            required
-          />
-        </label>
-
-        <label className={s.label}>
-          Number
-          <input
-            className={s.input}
-            type="tel"
-            name="number"
-            onChange={this.handleChange}
-            value={this.state.number}
-            pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
-            title="Номер телефона должен состоять цифр и может содержать пробелы, тире, круглые скобки и может начинаться с +"
-            required
-          />
-        </label>
-        <Button type="submit" text="Add contact" />
-      </form>
-    );
-  }
+      <label className={s.label}>
+        Number
+        <input
+          className={s.input}
+          type="tel"
+          name="number"
+          onChange={handleChange}
+          value={number}
+          pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
+          title="Номер телефона должен состоять цифр и может содержать пробелы, тире, круглые скобки и может начинаться с +"
+          required
+        />
+      </label>
+      <Button type="submit" text="Add contact" />
+    </form>
+  );
 }
 // console.log(addContact());
 const mapDispatchToProps = dispatch => ({
